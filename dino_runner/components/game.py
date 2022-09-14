@@ -19,6 +19,7 @@ class Game:
         self.y_pos_bg = 380
         self.player = Dinosaour()
         self.obstacles_manager = ObstacleManager()
+        self.score = 0            
 
     def run(self):
         # Game loop: events - update - draw
