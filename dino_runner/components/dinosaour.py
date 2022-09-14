@@ -1,15 +1,18 @@
-from dino_runner.utils.constants import DUCKING, RUNNING,JUMPING
 import pygame
+from pygame.sprite import Sprite
+
+from dino_runner.utils.constants import DUCKING, RUNNING,JUMPING
 
 
-class Dinosaour:
+class Dinosaour(Sprite):
     X_POS = 80
     Y_POS = 300
     JUM_VEL = 8.5
-    def __init__(self) -> None:
-        self.iamge = RUNNING[0]
 
-        self.dino_rect = self.iamge.get_rect()
+    def __init__(self) -> None:
+        self.image = RUNNING[0]
+
+        self.dino_rect = self.image.get_rect()
         self.dino_rect.x = self.X_POS
         self.dino_rect.y = self.Y_POS
 
@@ -31,7 +34,7 @@ class Dinosaour:
             self.duck() 
         
         
-        if user_input[pygame.K_UP] and not self.dino_jump:
+        if user_input[pygame.K_UP] or user_input[pygame.K_SPACE] and not self.dino_jump:
             self.dino_jump = True
             self.dino_run = False
             self.dino_duck = False
