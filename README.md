@@ -1,6 +1,6 @@
 # David-Lezama-Dino-Runner-Modulo2
-##Project for Admission Course of Jala University
 
+## Project for Admission Course of Jala University
 
 Game Dino Runner
 
