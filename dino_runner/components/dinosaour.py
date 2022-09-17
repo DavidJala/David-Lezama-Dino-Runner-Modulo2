@@ -1,8 +1,20 @@
 import pygame
 from pygame.sprite import Sprite
 
-from dino_runner.utils.constants import DUCKING, RUNNING,JUMPING
+from dino_runner.utils.constants import DUCKING, RUNNING,JUMPING,DEFAULT_TYPE, DUCKING_SHIELD,JUMPING_SHIELD,RUNNING_SHIELD,SHIELD_TYPE
 
+DUCK_IMG = {
+    DEFAULT_TYPE: DUCKING,
+    SHIELD_TYPE : DUCKING_SHIELD
+}
+JUMP_IMG = {
+    DEFAULT_TYPE: JUMPING,
+    SHIELD_TYPE : JUMPING_SHIELD
+}
+RUN_IMG ={
+    DEFAULT_TYPE: RUNNING,
+    SHIELD_TYPE : RUNNING_SHIELD
+}
 
 class Dinosaour(Sprite):
     X_POS = 80
@@ -11,7 +23,8 @@ class Dinosaour(Sprite):
     DUCK_Y_POS = 340
 
     def __init__(self) -> None:
-        self.image = RUNNING[0]
+        self.type = DEFAULT_TYPE
+        self.image = RUN_IMG[self.type][0]
 
         self.dino_rect = self.image.get_rect()
         self.dino_rect.x = self.X_POS
@@ -24,6 +37,9 @@ class Dinosaour(Sprite):
         self.dino_duck = False
 
         self.jump_vel = self.JUM_VEL
+
+        self.has_power_up = False
+        self.power_time_up = 0
     
     def  update(self,user_input)-> None:
 
@@ -48,11 +64,12 @@ class Dinosaour(Sprite):
             self.dino_run = True
             self.dino_duck = False
         
-        if self.step_index >= 10:
+        if self.step_index >= 9:
             self.step_index = 0
 
     def run(self)-> None:  
-        self.image = RUNNING[0] if self.step_index < 5 else RUNNING[1]
+        # self.image = RUNNING[0] if self.step_index < 5 else RUNNING[1]
+        self.image = RUN_IMG[self.type][self.step_index // 5]
         self.dino_rect = self.image.get_rect()
         self.dino_rect.x = self.X_POS
         self.dino_rect.y = self.Y_POS
@@ -60,7 +77,7 @@ class Dinosaour(Sprite):
         
         
     def jump(self) -> None:
-        self.image = JUMPING
+        self.image = JUMP_IMG[self.type]
         self.dino_rect.y -= self.jump_vel * 4 
 
         self.jump_vel -= 0.8
@@ -71,7 +88,8 @@ class Dinosaour(Sprite):
             self.jump_vel = self.JUM_VEL
     
     def duck(self) -> None: 
-        self.image = DUCKING[0] if self.step_index < 5 else DUCKING[1]
+        # self.image = DUCKING[0] if self.step_index < 5 else DUCKING[1]
+        self.image = DUCK_IMG[self.type][self.step_index //5 ] 
         self.dino_rect = self.image.get_rect()
         self.dino_rect.x = self.X_POS
         self.dino_rect.y = self.DUCK_Y_POS

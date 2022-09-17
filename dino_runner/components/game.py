@@ -1,8 +1,14 @@
 import pygame
 
-from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS,FONT_STYLE
+
 from dino_runner.components.dinosaour import Dinosaour
 from dino_runner.components.obstacles.obstacleManger import ObstacleManager
+from dino_runner.components.power_ups.PowerUpManager import PowerUpManager
+from dino_runner.components.power_ups.shild import Shield
+from dino_runner.utils.constants import (BG, DEFAULT_TYPE, FONT_STYLE, FPS,
+                                         ICON, SCREEN_HEIGHT, SCREEN_WIDTH,
+                                         TITLE)
+
 
 class Game:
     def __init__(self):
@@ -16,7 +22,9 @@ class Game:
         self.x_pos_bg = 0
         self.y_pos_bg = 380
         self.player = Dinosaour()
+        self.shield = Shield()
         self.obstacles_manager = ObstacleManager()
+        self.power_up_manager = PowerUpManager()
         self.score = 0            
         self.running = True
         self.death_count = 0
@@ -29,10 +37,18 @@ class Game:
         pygame.display.quit()
         pygame.quit()
 
+    def reset_game(self):
+        self.game_speed = 20
+        self.score = 0
+        self.playing = True
+
+        self.obstacles_manager.reset_obstacles()
+        self.power_up_manager.reset_power_ups()
+        
+
     def run(self):
         # Game loop: events - update - draw
-        self.obstacles_manager.reset_obstacles()
-        self.playing = True
+        self.reset_game()
         while self.playing:
             self.events()
             self.update()
@@ -48,16 +64,28 @@ class Game:
         user_input = pygame.key.get_pressed()
         self.player.update(user_input)
         self.obstacles_manager.update(game=self)
+        self.power_up_manager.update(game=self,player=self.player)
 
     def draw(self):
         self.clock.tick(FPS)
         self.screen.fill((255, 255, 255))
         self.draw_background()
         self.draw_score()
+        self.draw_power_up_time()
         self.player.draw(self.screen)
         self.obstacles_manager.draw(screen=self.screen)
+        self.power_up_manager.draw(self.screen)
         pygame.display.update()
         pygame.display.flip()
+
+    def draw_power_up_time(self):
+        if self.player.has_power_up:
+            time_to_show = round((self.player.power_time_up - pygame.time.get_ticks() ) / 1000, 2)
+            if time_to_show >= 0:
+                self.print_on_screen(text=f'{self.player.type.capitalize()} enabled for {time_to_show} seconds',position_x=500,position_y=50,size_font=18)
+            else :
+                self.player.has_power_up = False
+                self.player.type = DEFAULT_TYPE
 
     def draw_background(self):
         image_width = BG.get_width()
@@ -68,21 +96,23 @@ class Game:
             self.x_pos_bg = 0
         self.x_pos_bg -= self.game_speed
 
-    def print_on_screen(self,text,width,height,size_font):
+    def print_on_screen(self,text,position_x,position_y,size_font):
         font = pygame.font.Font(FONT_STYLE,size_font)
         text =  font.render(text,True,(0,0,0))
         text_rec = text.get_rect()
-        text_rec.center = (width,height)
+        text_rec.center = (position_x,position_y)
         self.screen.blit(text,text_rec)
 
     def draw_score(self):
-        self.print_on_screen(height=50,text=f'Best Points {self.best_score}',width=950,size_font=10)
-        self.print_on_screen(height=50,text=f'Points {self.score}',width=1050,size_font=10)
+        self.print_on_screen(position_y=50,position_x=900,size_font=15,text=f'Best Score : {self.best_score}')
+        self.print_on_screen(position_y=50,position_x=1050,size_font=15,text=f'Score : {self.score}')
 
     def update_score(self):
             self.score += 1
+
             if self.score % 100 == 0 and self.game_speed < 2000:
                self.game_speed += 5
+
             if self.score > self.best_score:
                 self.best_score = self.score
             
@@ -93,22 +123,21 @@ class Game:
                 self.running = False
                 self.playing = False
             elif event.type == pygame.KEYDOWN:
-                self.game_speed = 20
-                self.score = 0
                 self.run()
 
     def show_menu(self):
         self.screen.fill((255,255,255))
         half_screen_height = SCREEN_HEIGHT // 2
         half_screen_width = SCREEN_WIDTH // 2 
+
         if self.death_count == 0:
-            self.print_on_screen(text='Press any Key to start',height=half_screen_height,width=half_screen_width,size_font=40)
+            self.print_on_screen(text='Press any Key to start',position_y=half_screen_height,position_x=half_screen_width,size_font=40)
         else :
-            self.print_on_screen(text="Game Over",height=half_screen_height-60,width=half_screen_width,size_font=40)
-            self.print_on_screen(text=f"- Your Deaths : {self.death_count}",height=half_screen_height-20,width=half_screen_width,size_font=20)
-            self.print_on_screen(text=f"- Your current socre :  {self.score}",height=half_screen_height,width=half_screen_width,size_font=20)
-            self.print_on_screen(text=f"-------------------------------------",height=half_screen_height+20,width=half_screen_width,size_font=20)
-            self.print_on_screen(text=f"- Your best_score: {self.best_score}",height=half_screen_height+40,width=half_screen_width,size_font=20)
+            self.print_on_screen(text="Game Over",position_y=half_screen_height-60,position_x=half_screen_width,size_font=40)
+            self.print_on_screen(text=f"Your Deaths : {self.death_count}",position_y=half_screen_height-20,position_x=half_screen_width,size_font=20)
+            self.print_on_screen(text=f"Your current score :  {self.score}",position_y=half_screen_height,position_x=half_screen_width,size_font=20)
+            self.print_on_screen(text=f"Your best score: {self.best_score}",position_y=half_screen_height+40,position_x=half_screen_width,size_font=20)
+
         pygame.display.update()
         pygame.display.flip()
         self.handler_events_on_menu()
