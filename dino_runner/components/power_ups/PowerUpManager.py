@@ -29,6 +29,9 @@ class PowerUpManager:
                 self.when_appears += random.randint(100,150)
                 self.power_ups.append(power_ups_to_render[random_power_up])
                 # self.power_ups.append(hammer)
+                # self.power_ups.append(shield)
+                # self.power_ups.append(heart)
+
 
         def update(self,game,player):
             self.generate_power_up(score=game.score)

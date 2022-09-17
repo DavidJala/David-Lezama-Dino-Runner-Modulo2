@@ -5,9 +5,8 @@ from dino_runner.components.dinosaour import Dinosaour
 from dino_runner.components.obstacles.obstacleManger import ObstacleManager
 from dino_runner.components.power_ups.PowerUpManager import PowerUpManager
 from dino_runner.components.power_ups.shild import Shield
-from dino_runner.utils.constants import (BG, DEATH_DINO, DEFAULT_TYPE, FONT_STYLE, FPS, GAME_OVER, HAMMER, HEART,
-                                         ICON, SCREEN_HEIGHT, SCREEN_WIDTH,
-                                         TITLE)
+from dino_runner.utils.constants import (BG, DEATH_DINO, DEFAULT_TYPE, FONT_STYLE, FPS, GAME_OVER, HAMMER, HAMMER_TYPE, HEART,
+                                         ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE)
 
 
 class Game:
@@ -86,10 +85,13 @@ class Game:
         if self.player.has_power_up:
             time_to_show = round((self.player.power_time_up - pygame.time.get_ticks() ) / 1000, 2)
             if time_to_show >= 0:
-                self.print_on_screen(text=f'{self.player.type.capitalize()} enabled for {time_to_show} seconds',position_x=500,position_y=50,size_font=18)
+                self.print_on_screen(text=f'{self.player.type.capitalize()} enabled for {time_to_show} seconds',position_x=500,position_y=100,size_font=15,color=(255,191,0))
             else :
                 self.player.has_power_up = False
-                self.player.type = DEFAULT_TYPE
+                if self.player.attacks <= 0:
+                    self.player.type = DEFAULT_TYPE
+                else: 
+                    self.player.type = HAMMER_TYPE
     
     def update_power_up(self):
         if self.player.attacks == 0 and not self.player.has_power_up:
@@ -104,27 +106,27 @@ class Game:
             self.x_pos_bg = 0
         self.x_pos_bg -= self.game_speed
 
-    def print_on_screen(self,text,position_x,position_y,size_font):
+    def print_on_screen(self,text,position_x,position_y,size_font,color=(0,0,0)):
         font = pygame.font.Font(FONT_STYLE,size_font)
-        text =  font.render(text,True,(0,0,0))
+        text =  font.render(text,True,color)
         text_rec = text.get_rect()
         text_rec.center = (position_x,position_y)
         self.screen.blit(text,text_rec)
 
     def draw_score(self):
-        self.print_on_screen(position_y=50,position_x=900,size_font=15,text=f'Best Score : {self.best_score}')
-        self.print_on_screen(position_y=50,position_x=1050,size_font=15,text=f'Score : {self.score}')
+        self.print_on_screen(position_y=50,position_x=750,size_font=15,text=f'Best Score : {self.best_score}')
+        self.print_on_screen(position_y=50,position_x=1000,size_font=15,text=f'Score : {self.score}')
     
     def draw_accout(self):
         pass
 
     def draw_hearts(self):
         self.screen.blit(HEART,(20,40)) 
-        self.print_on_screen(text=f"{self.player.hearts}",position_x=60,position_y=50,size_font=20)
+        self.print_on_screen(text=f"{self.player.hearts}",position_x=80,position_y=50,size_font=20)
     
     def draw_attacks(self):
-        self.screen.blit(HAMMER,(110,20)) 
-        self.print_on_screen(text=f"{self.player.attacks}",position_x=160,position_y=50,size_font=20)
+        self.screen.blit(HAMMER,(140,20)) 
+        self.print_on_screen(text=f"{self.player.attacks}",position_x=200,position_y=50,size_font=20)
 
     def update_score(self):
             self.score += 1
@@ -152,9 +154,9 @@ class Game:
         else :
             self.screen.blit(DEATH_DINO,(half_screen_width-80,half_screen_height))
             self.screen.blit(GAME_OVER,(half_screen_width-200,half_screen_height-100))
-            self.print_on_screen(text=f"Score :  {self.score}",position_y=half_screen_height-30,position_x=half_screen_width,size_font=30)
-            self.print_on_screen(text=f"Deaths : {self.death_count}",position_y=50,position_x=100,size_font=30)
-            self.print_on_screen(text=f"Best score: {self.best_score}",position_y=50,position_x=SCREEN_WIDTH-150,size_font=30)
+            self.print_on_screen(text=f"Score:{self.score}",position_y=half_screen_height-30,position_x=half_screen_width,size_font=30)
+            self.print_on_screen(text=f"Deaths:{self.death_count}",position_y=50,position_x=200,size_font=20)
+            self.print_on_screen(text=f"Best score:{self.best_score}",position_y=50,position_x=SCREEN_WIDTH-250,size_font=20)
 
         pygame.display.update()
         pygame.display.flip()
