@@ -12,6 +12,6 @@ class Cactus(Obstacle):
                 }
                 image,cactus_pos = self.cactus[cactusType]
                 self.type = random.randint(0,2)
-                super().__init__(image, obstacleType=self.type)
+                super().__init__(image, obstacleType=self.type,name='cactus')
                 self.rect.y = cactus_pos                 
                 

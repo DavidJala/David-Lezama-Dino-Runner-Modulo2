@@ -7,7 +7,7 @@ class Bird(Obstacle):
     def __init__(self,image) -> None:
         self.image = image
         self.type = random.randint(0,len(image)-1)
-        super().__init__(image,obstacleType=self.type)
+        super().__init__(image,obstacleType=self.type,name="bird")
         self.rect.y = 250
         self.step_index = 0
     

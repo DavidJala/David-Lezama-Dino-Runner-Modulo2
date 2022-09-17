@@ -5,7 +5,7 @@ from dino_runner.components.dinosaour import Dinosaour
 from dino_runner.components.obstacles.obstacleManger import ObstacleManager
 from dino_runner.components.power_ups.PowerUpManager import PowerUpManager
 from dino_runner.components.power_ups.shild import Shield
-from dino_runner.utils.constants import (BG, DEATH_DINO, DEFAULT_TYPE, FONT_STYLE, FPS, GAME_OVER, HEART,
+from dino_runner.utils.constants import (BG, DEATH_DINO, DEFAULT_TYPE, FONT_STYLE, FPS, GAME_OVER, HAMMER, HEART,
                                          ICON, SCREEN_HEIGHT, SCREEN_WIDTH,
                                          TITLE)
 
@@ -41,7 +41,8 @@ class Game:
         self.game_speed = 20
         self.score = 0
         self.playing = True
-
+        self.player.type = DEFAULT_TYPE
+        self.player.attacks = 0
         self.obstacles_manager.reset_obstacles()
         self.power_up_manager.reset_power_ups()
         
@@ -62,6 +63,7 @@ class Game:
     def update(self):
         self.update_score()
         user_input = pygame.key.get_pressed()
+        self.update_power_up()
         self.player.update(user_input)
         self.obstacles_manager.update(game=self)
         self.power_up_manager.update(game=self,player=self.player)
@@ -72,6 +74,7 @@ class Game:
         self.draw_background()
         self.draw_score()
         self.draw_hearts()
+        self.draw_attacks()
         self.draw_power_up_time()
         self.player.draw(self.screen)
         self.obstacles_manager.draw(screen=self.screen)
@@ -86,6 +89,10 @@ class Game:
                 self.print_on_screen(text=f'{self.player.type.capitalize()} enabled for {time_to_show} seconds',position_x=500,position_y=50,size_font=18)
             else :
                 self.player.has_power_up = False
+                self.player.type = DEFAULT_TYPE
+    
+    def update_power_up(self):
+        if self.player.attacks == 0 and not self.player.has_power_up:
                 self.player.type = DEFAULT_TYPE
 
     def draw_background(self):
@@ -114,11 +121,15 @@ class Game:
     def draw_hearts(self):
         self.screen.blit(HEART,(20,40)) 
         self.print_on_screen(text=f"{self.player.hearts}",position_x=60,position_y=50,size_font=20)
+    
+    def draw_attacks(self):
+        self.screen.blit(HAMMER,(110,20)) 
+        self.print_on_screen(text=f"{self.player.attacks}",position_x=160,position_y=50,size_font=20)
 
     def update_score(self):
             self.score += 1
             if self.score % 100 == 0 and self.game_speed < 2000:
-               self.game_speed += 5
+               self.game_speed += 3
             if self.score > self.best_score:
                 self.best_score = self.score
 
