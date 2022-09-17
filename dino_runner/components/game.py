@@ -5,7 +5,7 @@ from dino_runner.components.dinosaour import Dinosaour
 from dino_runner.components.obstacles.obstacleManger import ObstacleManager
 from dino_runner.components.power_ups.PowerUpManager import PowerUpManager
 from dino_runner.components.power_ups.shild import Shield
-from dino_runner.utils.constants import (BG, DEFAULT_TYPE, FONT_STYLE, FPS,
+from dino_runner.utils.constants import (BG, DEATH_DINO, DEFAULT_TYPE, FONT_STYLE, FPS, GAME_OVER, HEART,
                                          ICON, SCREEN_HEIGHT, SCREEN_WIDTH,
                                          TITLE)
 
@@ -71,6 +71,7 @@ class Game:
         self.screen.fill((255, 255, 255))
         self.draw_background()
         self.draw_score()
+        self.draw_hearts()
         self.draw_power_up_time()
         self.player.draw(self.screen)
         self.obstacles_manager.draw(screen=self.screen)
@@ -106,16 +107,20 @@ class Game:
     def draw_score(self):
         self.print_on_screen(position_y=50,position_x=900,size_font=15,text=f'Best Score : {self.best_score}')
         self.print_on_screen(position_y=50,position_x=1050,size_font=15,text=f'Score : {self.score}')
+    
+    def draw_accout(self):
+        pass
+
+    def draw_hearts(self):
+        self.screen.blit(HEART,(20,40)) 
+        self.print_on_screen(text=f"{self.player.hearts}",position_x=60,position_y=50,size_font=20)
 
     def update_score(self):
             self.score += 1
-
             if self.score % 100 == 0 and self.game_speed < 2000:
                self.game_speed += 5
-
             if self.score > self.best_score:
                 self.best_score = self.score
-            
 
     def handler_events_on_menu(self):
         for event in pygame.event.get():
@@ -131,12 +136,14 @@ class Game:
         half_screen_width = SCREEN_WIDTH // 2 
 
         if self.death_count == 0:
+            self.screen.blit(ICON, (half_screen_width-20, half_screen_height-150))
             self.print_on_screen(text='Press any Key to start',position_y=half_screen_height,position_x=half_screen_width,size_font=40)
         else :
-            self.print_on_screen(text="Game Over",position_y=half_screen_height-60,position_x=half_screen_width,size_font=40)
-            self.print_on_screen(text=f"Your Deaths : {self.death_count}",position_y=half_screen_height-20,position_x=half_screen_width,size_font=20)
-            self.print_on_screen(text=f"Your current score :  {self.score}",position_y=half_screen_height,position_x=half_screen_width,size_font=20)
-            self.print_on_screen(text=f"Your best score: {self.best_score}",position_y=half_screen_height+40,position_x=half_screen_width,size_font=20)
+            self.screen.blit(DEATH_DINO,(half_screen_width-80,half_screen_height))
+            self.screen.blit(GAME_OVER,(half_screen_width-200,half_screen_height-100))
+            self.print_on_screen(text=f"Score :  {self.score}",position_y=half_screen_height-30,position_x=half_screen_width,size_font=30)
+            self.print_on_screen(text=f"Deaths : {self.death_count}",position_y=50,position_x=100,size_font=30)
+            self.print_on_screen(text=f"Best score: {self.best_score}",position_y=50,position_x=SCREEN_WIDTH-150,size_font=30)
 
         pygame.display.update()
         pygame.display.flip()

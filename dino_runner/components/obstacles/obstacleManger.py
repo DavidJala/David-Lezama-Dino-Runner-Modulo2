@@ -31,23 +31,16 @@ class ObstacleManager:
             obstacle.update(game.game_speed,self.obstacles)
             if game.player.dino_rect.colliderect(obstacle.rect):
                 if game.player.type != SHIELD_TYPE:
-                    pygame.time.delay(1000)
-                    game.death_count += 1
-                    game.playing = False
-                    break
+                    if game.player.hearts == 1:
+                        pygame.time.delay(1000)
+                        game.death_count += 1
+                        game.playing = False
+                        break
+                    else:
+                        game.player.hearts = game.player.hearts - 1 
+                        self.obstacles.remove(obstacle)
                 else :
                     self.obstacles.remove(obstacle)
-            # self.collision(game=game,obstacle=obstacle)
-                
-    # def collision(self,obstacle,game)-> None:
-    #     obstacle.update(game.game_speed,self.obstacles)
-    #     if game.player.dino_rect.colliderect(obstacle.rect):
-    #         if game.player.type != SHIELD_TYPE:
-    #             pygame.time.delay(1000)
-    #             game.death_count += 1 
-    #             game.playing = False
-    #         else:
-    #             self.obstacles.remove(obstacle)
 
             
     def draw(self,screen) -> None:

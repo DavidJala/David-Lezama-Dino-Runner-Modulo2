@@ -40,6 +40,7 @@ class Dinosaour(Sprite):
 
         self.has_power_up = False
         self.power_time_up = 0
+        self.hearts = 1
     
     def  update(self,user_input)-> None:
 
