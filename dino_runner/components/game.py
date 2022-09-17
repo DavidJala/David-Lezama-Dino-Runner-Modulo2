@@ -122,11 +122,11 @@ class Game:
 
     def draw_hearts(self):
         self.screen.blit(HEART,(20,40)) 
-        self.print_on_screen(text=f"{self.player.hearts}",position_x=80,position_y=50,size_font=20)
+        self.print_on_screen(text=f"{self.player.hearts}",position_x=80,position_y=50,size_font=20,color=(106,90,205))
     
     def draw_attacks(self):
         self.screen.blit(HAMMER,(140,20)) 
-        self.print_on_screen(text=f"{self.player.attacks}",position_x=200,position_y=50,size_font=20)
+        self.print_on_screen(text=f"{self.player.attacks}",position_x=200,position_y=50,size_font=20,color=(106, 90, 205))
 
     def update_score(self):
             self.score += 1

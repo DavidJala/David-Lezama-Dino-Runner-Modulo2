@@ -74,8 +74,11 @@ BG = pygame.image.load(os.path.join(IMG_DIR, 'Other/Track.png'))
 HEART = pygame.image.load(os.path.join(IMG_DIR, 'Other/SmallHeart.png'))
 
 DEFAULT_TYPE = "default"
-# FONT_STYLE = 'freesansbold.ttf'
 FONT_STYLE = os.path.join(IMG_DIR,"Font/font.ttf")
 
 DEATH_DINO = pygame.image.load(os.path.join(IMG_DIR, "Dino/DinoDead.png"))
 GAME_OVER = pygame.image.load(os.path.join(IMG_DIR,"Other/GameOver.png"))
+
+
+NAME_BIRD = 'bird' 
+NAME_CACTUS = 'cactus'

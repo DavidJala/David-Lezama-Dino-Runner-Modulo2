@@ -3,7 +3,7 @@ import random
 
 from dino_runner.components.obstacles.bird import Bird
 from dino_runner.components.obstacles.cactus import Cactus
-from dino_runner.utils.constants import BIRD, HAMMER_TYPE, SHIELD_TYPE
+from dino_runner.utils.constants import BIRD, HAMMER_TYPE, NAME_BIRD, SHIELD_TYPE
 
 
 
@@ -38,7 +38,7 @@ class ObstacleManager:
                         self.death_dino(game,obstacle)
                         break
                     else:
-                        if obstacle.name != 'bird':
+                        if obstacle.name != NAME_BIRD:
                             self.obstacles.remove(obstacle)
                             game.player.attacks = game.player.attacks - 1 
                         else: 
